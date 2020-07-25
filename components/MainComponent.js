@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Platform, Text, ScrollView, Image, StyleSheet, SafeAreaView } from 'react-native';
-import {Icon} from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer'
@@ -9,6 +9,24 @@ import Menu from './MenuComponent';
 import Dishdetail from './DishdetailComponent';
 import Contact from './ContactComponent.js';
 import About from './AboutComponent.js';
+import { connect } from 'react-redux';
+import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators';
+
+const mapStateToProps = state => {
+  return {
+    dishes: state.dishes,
+    comments: state.comments,
+    promotions: state.promotions,
+    leaders: state.leaders
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  fetchDishes: () => dispatch(fetchDishes()),
+  fetchComments: () => dispatch(fetchComments()),
+  fetchPromos: () => dispatch(fetchPromos()),
+  fetchLeaders: () => dispatch(fetchLeaders()),
+})
 
 const MenuNavigator = createStackNavigator();
 const AboutNavigator = createStackNavigator();
@@ -17,7 +35,7 @@ const ContactNavigator = createStackNavigator();
 
 const MainNavigator = createDrawerNavigator();
 
-const HomeNavigatorComp = () => (
+const HomeNavigatorComp = ({navigation}) => (
   <HomeNavigator.Navigator initialRouteName="Home"
   screenOptions= {{
     headerStyle: {
@@ -35,7 +53,7 @@ const HomeNavigatorComp = () => (
   </HomeNavigator.Navigator>
 )
 
-const AboutNavigatorComp = () => (
+const AboutNavigatorComp = ({navigation}) => (
   <AboutNavigator.Navigator initialRouteName="About"
   screenOptions= {{
     headerStyle: {
@@ -107,15 +125,20 @@ const CustomDrawerContent = (props) => (
 
 
 class Main extends Component {
+  
   constructor(props) {
     super(props);
-    this.state = {
-      selectedDish: null
-    };
   }
 
   onDishSelect(dishId) {
     this.setState({selectedDish: dishId})
+  }
+
+  componentDidMount() {
+    this.props.fetchDishes();
+    this.props.fetchComments();
+    this.props.fetchPromos();
+    this.props.fetchLeaders();
   }
 
   render() {
@@ -203,5 +226,5 @@ const styles = StyleSheet.create({
   }
 });
 
-  
-export default Main;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
