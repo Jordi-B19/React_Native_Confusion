@@ -1,15 +1,50 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import Home from './HomeComponent';
 import Menu from './MenuComponent';
 import Dishdetail from './DishdetailComponent';
-import { DISHES } from '../shared/dishes';
+
+const MenuNavigator = createStackNavigator();
+const HomeNavigator = createStackNavigator();
+
+const MainNavigator = createDrawerNavigator();
+
+const HomeNavigatorComp = () => (
+  <HomeNavigator.Navigator initialRouteName="Home"
+  screenOptions= {{
+    headerStyle: {
+        backgroundColor: "#512DA8"
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+        color: "#fff"            
+    }}}>
+    <HomeNavigator.Screen name="Home" component={Home} options={{ title: 'Home' }} />
+  </HomeNavigator.Navigator>
+)
+const MenuNavigatorComp = () => (
+  <MenuNavigator.Navigator initialRouteName="Menu"
+    screenOptions= {{
+      headerStyle: {
+          backgroundColor: "#512DA8"
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+          color: "#fff"            
+      }}}>
+    <MenuNavigator.Screen name="Menu" component={Menu} options={{ title: 'Menu' }}/>
+    <MenuNavigator.Screen name="Dishdetail" component={Dishdetail} options={{ title: 'Dish Details' }} />
+  </MenuNavigator.Navigator>
+)
 
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dishes: DISHES,
       selectedDish: null
     };
   }
@@ -21,10 +56,13 @@ class Main extends Component {
   render() {
  
     return (
-      <View style={{flex:1}}>
-        <Menu dishes={this.state.dishes} onPress={(dishId) => this.onDishSelect(dishId)} />
-        <Dishdetail dish={this.state.dishes.filter((dish) => dish.id === this.state.selectedDish)[0]} />
-      </View>
+      <NavigationContainer style={{flex:1, paddingTop: Platform.OS === 'ios' ? 0 : Expo.Constants.statusBarHeight }}>
+        <MainNavigator.Navigator initialRouteName="Home"
+          drawerStyle= {{backgroundColor: "#D1C4E9"}} >
+          <MainNavigator.Screen name="Home" component={HomeNavigatorComp} />
+          <MainNavigator.Screen name="Menu" component={MenuNavigatorComp} />
+        </MainNavigator.Navigator>
+      </NavigationContainer>
     );
   }
 }
