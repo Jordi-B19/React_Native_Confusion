@@ -20,35 +20,49 @@ const mapDispatchToProps = dispatch => ({
     postComment: (comment, dishId) => dispatch(postComment(comment, dishId))
 })
 
-function RenderDish(props) {
+class RenderDish extends Component {
 
-    const dish = props.dish;
+    constructor(props) {
+        super(props)
+    }
+
+    dish = this.props.dish;
 
     handleViewRef = ref => this.view = ref;
 
-    const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
+    recognizeDragBackward = ({ moveX, moveY, dx, dy }) => {
         if ( dx < -200 )
             return true;
         else
             return false;
     }
 
-    const panResponder = PanResponder.create({
+    recognizeDragForward = ({ moveX, moveY, dx, dy }) => {
+        if ( dx > 200 )
+            return true;
+        else
+            return false;
+    }
+
+
+    panResponder = PanResponder.create({
         onStartShouldSetPanResponder: (e, gestureState) => {
             return true;
         },
         onPanResponderEnd: (e, gestureState) => {
             console.log("pan responder end", gestureState);
-            if (recognizeDrag(gestureState))
+            if (this.recognizeDragBackward(gestureState))
                 Alert.alert(
                     'Add Favorite',
-                    'Are you sure you wish to add ' + dish.name + ' to favorite?',
+                    'Are you sure you wish to add ' + this.props.dish.name + ' to favorite?',
                     [
                     {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                    {text: 'OK', onPress: () => {props.favorite ? console.log('Already favorite') : props.onPress()}},
+                    {text: 'OK', onPress: () => {this.props.favorite ? console.log('Already favorite') : this.props.onPress()}},
                     ],
                     { cancelable: false }
                 );
+            else if (this.recognizeDragForward(gestureState))
+                this.props.addComment();
 
             return true;
         },
@@ -56,26 +70,29 @@ function RenderDish(props) {
             this.view.rubberBand(1000).then(endState => console.log(endState.finished ? 'finished' : 'cancelled'));
         },
     })
+
+    render() {
     
-        if (dish != null) {
+    
+        if (this.dish != null) {
             return(
                 <Animatable.View animation="fadeInDown" duration={2000} delay={1000} 
                 useNativeDriver={true}
-                ref={this.handleViewRef} {...panResponder.panHandlers}>
+                ref={this.handleViewRef} {...this.panResponder.panHandlers}>
                     <Card
-                    featuredTitle={dish.name}
-                    image={{uri: baseUrl + dish.image}}>
+                    featuredTitle={this.dish.name}
+                    image={{uri: baseUrl + this.dish.image}}>
                         <Text style={{margin: 10}}>
-                            {dish.description}
+                            {this.dish.description}
                         </Text>
                         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                         <Icon
                             raised
                             reverse
-                            name={ props.favorite ? 'heart' : 'heart-o'}
+                            name={ this.props.favorite ? 'heart' : 'heart-o'}
                             type='font-awesome'
                             color='#f50'
-                            onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()}
+                            onPress={() => this.props.favorite ? console.log('Already favorite') : this.props.onPress()}
                             />
                         <Icon
                             raised
@@ -83,7 +100,7 @@ function RenderDish(props) {
                             name='pencil'
                             type='font-awesome'
                             color='#512DA8'
-                            onPress={() => props.addComment()}
+                            onPress={() => this.props.addComment()}
                             />
                         </View>
                         
@@ -94,6 +111,7 @@ function RenderDish(props) {
         else {
             return(<View></View>);
         }
+    }
 }
 
 function RenderComments(props) {
