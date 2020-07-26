@@ -97,7 +97,7 @@ class Reservation extends Component {
                     title= {` ${('0' + this.state.date.getHours()).slice(-2)}:${('0' + this.state.date.getMinutes()).slice(-2)}`}
                     onPress={() => {this.setState({visible: true, mode: 'time'})}} 
                     containerStyle={styles.formItem}
-                    buttonStyle={{backgroundColor: "#512DA8", fontSize: 14}}
+                    buttonStyle={{backgroundColor: "#512DA8", fontSize: 14, elevation:5}}
                 />
                 </View>
                 {this.state.visible &&
@@ -112,13 +112,12 @@ class Reservation extends Component {
                     onPress={() => this.handleReservation()}
                     title="Reserve"
                     containerStyle={styles.formItem}
-                    buttonStyle={{backgroundColor: "#512DA8", fontSize: 14}}
+                    buttonStyle={{backgroundColor: "#512DA8", fontSize: 14, elevation:5}}
                     accessibilityLabel="Learn more about this purple button"
                     />
                 </View>
                 <Modal animationType = {"slide"} transparent = {false}
                     visible = {this.state.showModal}
-                    onDismiss = {() => this.toggleModal() }
                     onRequestClose = {() => this.toggleModal() }>
                     <View style = {styles.modal}>
                         <Text style = {styles.modalTitle}>Your Reservation</Text>
@@ -128,7 +127,7 @@ class Reservation extends Component {
                         <Button
                             onPress = {() =>{this.toggleModal(); this.resetForm();}}
                             title="Close"
-                            buttonStyle={{backgroundColor: "#512DA8"}}
+                            buttonStyle={{backgroundColor: "#512DA8", elevation:5}}
                             accessibilityLabel="Learn more about this purple button"
                             />
                     </View>

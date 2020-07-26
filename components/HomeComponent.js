@@ -26,7 +26,7 @@ function RenderItem(props) {
     else if (props.errMess) {
         return(
             <View> 
-                <Text>{props.erreMess}</Text>
+                <Text>{props.errMess}</Text>
             </View>
         );
     }
@@ -50,11 +50,6 @@ function RenderItem(props) {
 }
 
 class Home extends Component {
-
-
-    static navigationOptions = {
-        title: 'Home',
-    };
 
     render() {
         
