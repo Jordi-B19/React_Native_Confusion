@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { FlatList, View, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
+import Swipeout from 'react-native-swipeout';
 import { connect } from 'react-redux';
+import { deleteFavorite } from '../redux/ActionCreators';
 import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
 
@@ -12,27 +14,37 @@ const mapStateToProps = state => {
     }
   }
 
-class Favorites extends Component {
+const mapDispatchToProps = dispatch => ({
+    deleteFavorite: (dishId) => dispatch(deleteFavorite(dishId))
+})
 
-    static navigationOptions = {
-        title: 'My Favorites'
-    };
+class Favorites extends Component {
 
     render() {
 
         const { navigate } = this.props.navigation;
         
         const renderMenuItem = ({item, index}) => {
+
+            const rightButton = [
+                {
+                    text: 'Delete', 
+                    type: 'delete',
+                    onPress: () => this.props.deleteFavorite(item.id)
+                }
+            ];
     
             return (
-                <ListItem
-                    key={index}
-                    title={item.name}
-                    subtitle={item.description}
-                    hideChevron={true}
-                    onPress={() => navigate('Dishdetail', { dishId: item.id })}
-                    leftAvatar={{ source: {uri: baseUrl + item.image}}}
-                    />
+                <Swipeout right={rightButton} autoClose={true}>
+                    <ListItem
+                        key={index}
+                        title={item.name}
+                        subtitle={item.description}
+                        hideChevron={true}
+                        onPress={() => navigate('Dishdetail', { dishId: item.id })}
+                        leftAvatar={{ source: {uri: baseUrl + item.image}}}
+                        />
+                </Swipeout>
             );
         };
 
@@ -61,4 +73,4 @@ class Favorites extends Component {
 }
 
 
-export default connect(mapStateToProps)(Favorites);
+export default connect(mapStateToProps,mapDispatchToProps)(Favorites);

@@ -185,10 +185,10 @@ class Main extends Component {
  
     return (
       <NavigationContainer style={{flex:1, paddingTop: Platform.OS === 'ios' ? 0 : Expo.Constants.statusBarHeight }}>
-        <MainNavigator.Navigator initialRouteName="Home"
+        <MainNavigator.Navigator initialRouteName="HomeNav"
           drawerStyle= {{backgroundColor: "#D1C4E9"}}
           drawerContent={(props) => <CustomDrawerContent {...props} />} >
-          <MainNavigator.Screen name="Home" component={HomeNavigatorComp} 
+          <MainNavigator.Screen name="HomeNav" component={HomeNavigatorComp} 
             options={{
               drawerLabel: 'Home',
               drawerIcon: ({ tintColor, focused }) => (
@@ -200,7 +200,7 @@ class Main extends Component {
                 />
               ),    
             }} />
-          <MainNavigator.Screen name="About" component={AboutNavigatorComp} 
+          <MainNavigator.Screen name="AboutNav" component={AboutNavigatorComp} 
             options={{
               drawerLabel: 'About Us',
               drawerIcon: ({ tintColor, focused }) => (
@@ -212,7 +212,7 @@ class Main extends Component {
                 />
               ),    
             }} />
-          <MainNavigator.Screen name="Menu" component={MenuNavigatorComp} 
+          <MainNavigator.Screen name="MenuNav" component={MenuNavigatorComp} 
             options={{
               drawerLabel: 'Menu',
               drawerIcon: ({ tintColor, focused }) => (
@@ -224,7 +224,7 @@ class Main extends Component {
                 />
               ),    
             }} />          
-          <MainNavigator.Screen name="Contact" component={ContactNavigatorComp} 
+          <MainNavigator.Screen name="ContactNav" component={ContactNavigatorComp} 
             options={{
               drawerLabel: 'Contact Us',
               drawerIcon: ({ tintColor, focused }) => (
@@ -236,7 +236,7 @@ class Main extends Component {
                 />
               ),    
             }} />
-          <MainNavigator.Screen name="Reservation" component={ReservationNavigatorComp} 
+          <MainNavigator.Screen name="ReservatioNav" component={ReservationNavigatorComp} 
             options={{
               drawerLabel: 'Reservation',
               drawerIcon: ({ tintColor, focused }) => (
