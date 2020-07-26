@@ -9,6 +9,7 @@ import Menu from './MenuComponent';
 import Dishdetail from './DishdetailComponent';
 import Contact from './ContactComponent.js';
 import About from './AboutComponent.js';
+import Reservation from './ReservationComponent';
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators';
 
@@ -32,6 +33,7 @@ const MenuNavigator = createStackNavigator();
 const AboutNavigator = createStackNavigator();
 const HomeNavigator = createStackNavigator();
 const ContactNavigator = createStackNavigator();
+const ReservationNavigator = createStackNavigator();
 
 const MainNavigator = createDrawerNavigator();
 
@@ -109,6 +111,24 @@ const ContactNavigatorComp = ({navigation}) => (
   </ContactNavigator.Navigator>
 )
 
+const ReservationNavigatorComp = ({navigation}) => (
+  <ReservationNavigator.Navigator initialRouteName="Reservation"
+  screenOptions= {{
+    headerStyle: {
+        backgroundColor: "#512DA8"
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+        color: "#fff"            
+    },
+    headerLeft: () => (<Icon name="menu" size={24}
+    color= 'white'
+    onPress={ () => navigation.toggleDrawer()} />)
+    }} >
+    <ReservationNavigator.Screen name="Reservation" component={Reservation} options={{ title: 'Reservation' }} />
+  </ReservationNavigator.Navigator>
+)
+
 const CustomDrawerContent = (props) => (
   <DrawerContentScrollView {...props}>
     <View style={styles.drawerHeader}>
@@ -160,7 +180,7 @@ class Main extends Component {
                 />
               ),    
             }} />
-          <MainNavigator.Screen name="About Us" component={AboutNavigatorComp} 
+          <MainNavigator.Screen name="About" component={AboutNavigatorComp} 
             options={{
               drawerLabel: 'About Us',
               drawerIcon: ({ tintColor, focused }) => (
@@ -184,7 +204,7 @@ class Main extends Component {
                 />
               ),    
             }} />          
-          <MainNavigator.Screen name="Contact Us" component={ContactNavigatorComp} 
+          <MainNavigator.Screen name="Contact" component={ContactNavigatorComp} 
             options={{
               drawerLabel: 'Contact Us',
               drawerIcon: ({ tintColor, focused }) => (
@@ -195,7 +215,19 @@ class Main extends Component {
                   color={tintColor}
                 />
               ),    
-            }} />          
+            }} />
+          <MainNavigator.Screen name="Reservation" component={ReservationNavigatorComp} 
+            options={{
+              drawerLabel: 'Reservation',
+              drawerIcon: ({ tintColor, focused }) => (
+                <Icon
+                  name='cutlery'
+                  type='font-awesome'            
+                  size={24}
+                  color={tintColor}
+                />
+              ),    
+            }} />            
         </MainNavigator.Navigator>
       </NavigationContainer>
     );
