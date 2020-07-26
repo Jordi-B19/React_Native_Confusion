@@ -10,6 +10,7 @@ import Dishdetail from './DishdetailComponent';
 import Contact from './ContactComponent.js';
 import About from './AboutComponent.js';
 import Reservation from './ReservationComponent';
+import Favorites from './FavoriteComponent';
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators';
 
@@ -34,6 +35,7 @@ const AboutNavigator = createStackNavigator();
 const HomeNavigator = createStackNavigator();
 const ContactNavigator = createStackNavigator();
 const ReservationNavigator = createStackNavigator();
+const FavoritesNavigator = createStackNavigator();
 
 const MainNavigator = createDrawerNavigator();
 
@@ -127,6 +129,24 @@ const ReservationNavigatorComp = ({navigation}) => (
     }} >
     <ReservationNavigator.Screen name="Reservation" component={Reservation} options={{ title: 'Reservation' }} />
   </ReservationNavigator.Navigator>
+)
+
+const FavoritesNavigatorComp = ({navigation}) => (
+  <FavoritesNavigator.Navigator initialRouteName="Favorites"
+  screenOptions= {{
+    headerStyle: {
+        backgroundColor: "#512DA8"
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+        color: "#fff"            
+    },
+    headerLeft: () => (<Icon name="menu" size={24}
+    color= 'white'
+    onPress={ () => navigation.toggleDrawer()} />)
+    }} >
+    <FavoritesNavigator.Screen name="Favorites" component={Favorites} options={{ title: 'My Favorites' }} />
+  </FavoritesNavigator.Navigator>
 )
 
 const CustomDrawerContent = (props) => (
@@ -227,7 +247,19 @@ class Main extends Component {
                   color={tintColor}
                 />
               ),    
-            }} />            
+            }} />
+          <MainNavigator.Screen name="Favorites" component={FavoritesNavigatorComp} 
+            options={{
+              drawerLabel: 'My Favorites',
+              drawerIcon: ({ tintColor, focused }) => (
+                <Icon
+                  name='heart'
+                  type='font-awesome'            
+                  size={24}
+                  color={tintColor}
+                />
+              ),    
+            }} />             
         </MainNavigator.Navigator>
       </NavigationContainer>
     );
