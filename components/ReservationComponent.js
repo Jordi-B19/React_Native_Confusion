@@ -5,6 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Animatable from 'react-native-animatable';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
+import * as Calendar from 'expo-calendar';
 
 class Reservation extends Component {
 
@@ -41,6 +42,7 @@ class Reservation extends Component {
                     text: 'OK',
                     onPress: () => {
                         this.presentLocalNotification(this.state.date);
+                        this.addReservationToCalendar(this.state.date);
                         this.resetForm();
                     },
                 }
@@ -85,6 +87,33 @@ class Reservation extends Component {
         });
     }
 
+
+    async obtainCalendarPermission() {
+        let permission = await Permissions.getAsync(Permissions.CALENDAR);
+        if (permission.status !== 'granted') {
+            permission = await Permissions.askAsync(Permissions.Permissions.CALENDAR);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to show notifications');
+            }
+        }
+        return permission;}
+
+    async addReservationToCalendar(date) {
+
+        const details = {
+            title : 'ConFusion Table Reservation',
+            startDate : date,
+            endDate : new Date(date + 2*60*60*1000),
+            timeZone : 'Asia/Hong_Kong',
+            location : '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong'
+        }
+
+        this.obtainCalendarPermission()
+            .then(Calendar.createEventAsync(Calendar.DEFAULT, details))
+
+
+
+    }
     
     
     render() {
