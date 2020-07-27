@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, FlatList, Modal, Alert, PanResponder } from 'react-native';
+import { Text, View, ScrollView, FlatList, Modal, Alert, PanResponder, Share } from 'react-native';
 import { Card, Icon, Rating, Input, Button } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
@@ -24,6 +24,16 @@ class RenderDish extends Component {
 
     constructor(props) {
         super(props)
+    }
+
+    shareDish = (title, message, url) => {
+        Share.share({
+            title: title,
+            message: title + ': ' + message + ' ' + url,
+            url: url
+        },{
+            dialogTitle: 'Share ' + title
+        })
     }
 
     dish = this.props.dish;
@@ -54,7 +64,7 @@ class RenderDish extends Component {
             if (this.recognizeDragBackward(gestureState))
                 Alert.alert(
                     'Add Favorite',
-                    'Are you sure you wish to add ' + this.props.dish.name + ' to favorite?',
+                    'Are you sure you wish to add ' + this.dish.name + ' to favorite?',
                     [
                     {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
                     {text: 'OK', onPress: () => {this.props.favorite ? console.log('Already favorite') : this.props.onPress()}},
@@ -102,6 +112,13 @@ class RenderDish extends Component {
                             color='#512DA8'
                             onPress={() => this.props.addComment()}
                             />
+                        <Icon
+                            raised
+                            reverse
+                            name='share'
+                            type='font-awesome'
+                            color='#51D2A8'
+                            onPress={() => this.shareDish(this.dish.name, this.dish.description, baseUrl + this.dish.image)} />
                         </View>
                         
                     </Card>
@@ -201,7 +218,8 @@ class Dishdetail extends Component {
                     <View style={{margin: 10}}>
                         <Rating
                             showRating
-                            onFinishRating={(rating) => this.setState({rating: rating})} />
+                            onFinishRating={(rating) => this.setState({rating: rating})}
+                            fractions={0} startingValue={3}  />
                         <Input
                             placeholder='Author'
                             leftIcon={{ type: 'font-awesome', name: 'user' }}

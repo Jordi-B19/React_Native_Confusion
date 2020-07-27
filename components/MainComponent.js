@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Platform, Text, ScrollView, Image, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Platform, Text, Image, StyleSheet, NetInfo, ToastAndroid } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -11,6 +11,7 @@ import Contact from './ContactComponent.js';
 import About from './AboutComponent.js';
 import Reservation from './ReservationComponent';
 import Favorites from './FavoriteComponent';
+import Login from './LoginComponent';
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators';
 
@@ -36,6 +37,7 @@ const HomeNavigator = createStackNavigator();
 const ContactNavigator = createStackNavigator();
 const ReservationNavigator = createStackNavigator();
 const FavoritesNavigator = createStackNavigator();
+const LoginNavigator = createStackNavigator();
 
 const MainNavigator = createDrawerNavigator();
 
@@ -149,6 +151,24 @@ const FavoritesNavigatorComp = ({navigation}) => (
   </FavoritesNavigator.Navigator>
 )
 
+const LoginNavigatorComp = ({navigation}) => (
+  <LoginNavigator.Navigator initialRouteName="Login"
+  screenOptions= {{
+    headerStyle: {
+        backgroundColor: "#512DA8"
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+        color: "#fff"            
+    },
+    headerLeft: () => (<Icon name="menu" size={24}
+    color= 'white'
+    onPress={ () => navigation.toggleDrawer()} />)
+    }} >
+    <LoginNavigator.Screen name="Login" component={Login} options={{ title: 'Login' }} />
+  </LoginNavigator.Navigator>
+)
+
 const CustomDrawerContent = (props) => (
   <DrawerContentScrollView {...props}>
     <View style={styles.drawerHeader}>
@@ -179,6 +199,38 @@ class Main extends Component {
     this.props.fetchComments();
     this.props.fetchPromos();
     this.props.fetchLeaders();
+
+    NetInfo.getConnectionInfo()
+      .then((connectionInfo) => {
+          ToastAndroid.show('Initial Network Connectivity Type: '
+              + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType,
+              ToastAndroid.LONG)
+      });
+
+    NetInfo.addEventListener('connectionChange', this.handleConnectivityChange);
+  }
+
+  componentWillUnmount() {
+    NetInfo.removeEventListener('connectionChange', this.handleConnectivityChange);
+  }
+
+  handleConnectivityChange = (connectionInfo) => {
+    switch (connectionInfo.type) {
+      case 'none':
+        ToastAndroid.show('You are now offline!', ToastAndroid.LONG);
+        break;
+      case 'wifi':
+        ToastAndroid.show('You are now connected to WiFi!', ToastAndroid.LONG);
+        break;
+      case 'cellular':
+        ToastAndroid.show('You are now connected to Cellular!', ToastAndroid.LONG);
+        break;
+      case 'unknown':
+        ToastAndroid.show('You now have unknown connection!', ToastAndroid.LONG);
+        break;
+      default:
+        break;
+    }
   }
 
   render() {
@@ -248,7 +300,7 @@ class Main extends Component {
                 />
               ),    
             }} />
-          <MainNavigator.Screen name="Favorites" component={FavoritesNavigatorComp} 
+          <MainNavigator.Screen name="FavoritesNav" component={FavoritesNavigatorComp} 
             options={{
               drawerLabel: 'My Favorites',
               drawerIcon: ({ tintColor, focused }) => (
@@ -259,7 +311,19 @@ class Main extends Component {
                   color={tintColor}
                 />
               ),    
-            }} />             
+            }} />  
+          <MainNavigator.Screen name="LoginNav" component={LoginNavigatorComp} 
+            options={{
+              drawerLabel: 'Login',
+              drawerIcon: ({ tintColor, focused }) => (
+                <Icon
+                  name='sign-in'
+                  type='font-awesome'            
+                  size={24}
+                  color={tintColor}
+                />
+              ),    
+            }} />              
         </MainNavigator.Navigator>
       </NavigationContainer>
     );
